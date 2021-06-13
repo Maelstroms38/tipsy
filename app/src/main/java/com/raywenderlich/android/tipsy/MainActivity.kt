@@ -35,12 +35,20 @@
 package com.raywenderlich.android.tipsy
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 /**
  * Main Screen
  */
 class MainActivity : AppCompatActivity() {
+  private lateinit var billTextInput: EditText
+  private lateinit var percentTextInput: EditText
+  private lateinit var tipTextView: TextView
+  private lateinit var totalTextView: TextView
+  private lateinit var submitButton: Button
 
   override fun onCreate(savedInstanceState: Bundle?) {
     // Switch to AppTheme for displaying the activity
@@ -50,7 +58,42 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     // Your code
+    billTextInput = findViewById(R.id.billTextInput)
+    percentTextInput = findViewById(R.id.percentTextInput)
+    tipTextView = findViewById(R.id.tipTextView)
+    totalTextView = findViewById(R.id.totalTextView)
+    submitButton = findViewById(R.id.submitButton)
 
 
+  }
+
+  override fun onStart() {
+    super.onStart()
+    submitButton.setOnClickListener {
+      submitButtonPressed()
+    }
+  }
+
+  private fun textOrZero(input: String?): String {
+    if (input.isNullOrBlank()) {
+      return "0"
+    }
+    return input
+  }
+
+  private fun submitButtonPressed() {
+    val bill = textOrZero(billTextInput.text.toString())
+    val percentage = textOrZero(percentTextInput.text.toString())
+    val tip = this.calculateTip(percentage.toInt(), bill.toInt())
+    tipTextView.text = tip.toString()
+    val total = tip + bill.toDouble()
+    totalTextView.text = total.toString()
+  }
+
+  private fun calculateTip(bill: Int, percent: Int): Double {
+    // convert percent to decimal number
+    val percentage = percent.toDouble() * 0.01
+    // multiply bill by percentage
+    return bill * percentage
   }
 }
